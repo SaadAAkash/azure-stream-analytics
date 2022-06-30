@@ -90,3 +90,8 @@ GROUP BY SessionWindow(second,5,10)
 - A pool of computation resources available to process a query. They can be machines dedicated to execute your Azure Stream Analytics queries.
 - It is recommended that SU percentage utilization should be below 80% all the time. If it goes above, we can scale the SUs while provisioning a new job or after the job being provisioned.
 
+### Development Notes
+- Every Job topology consists of four main actions: Inputs, Functions, Query & Outputs.
+- While configuring outputs for a job, there are two important settings that we need to be mindful of:
+  1. The first one is the minimum rows. If I set X to this field, this means no output batch or output file will get created unless I have at least X rows in my output.
+  2. The next setting is the maximum time. It means the maximum time the job is going to wait to have the minimum rows requirement satisfied. So if I put 1 minute here, this means that the job is going to wait for 1 minute to have the minimum rows completed. After the 1 minute is up, the job is going to create an output regardless of the number of rows I already have in my output.
