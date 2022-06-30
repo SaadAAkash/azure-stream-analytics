@@ -31,7 +31,7 @@ You can configure Azure Stream Analytics to write outputs into:
 1. Azure Event Hubs
 1. Power BI
 
-Note: Using Azure Event Hubs as output is useful when we need other services subscribing to Event Hubs
+**Note:** Using Azure Event Hubs as output is useful when we need other services subscribing to Event Hubs
 
 ### Live Event Processing
 
@@ -41,4 +41,48 @@ Note: Using Azure Event Hubs as output is useful when we need other services sub
 1. Hopping window
 1. Sliding window
 1. Session window
+
+##### Tumbling window
+The size of a tumbling window is fixed, and there is no overlapping between consequent windows
+
+```sql
+SELECT COUNT(*)
+FROM Input
+GROUP BY TumblingWindow(second,5)
+```
+
+##### Hopping window
+The size of a hopping window is fixed, but the difference with the tumbling window is the consequent windows are overlapping.
+The function will take 3 inputs: unit of time, size of the window & hopping size.
+
+```sql
+SELECT COUNT(*)
+FROM Input
+GROUP BY HoppingWindow(second,10,5)
+```
+
+##### Sliding window
+The size of sliding windows are fixed, but new windows will only get created/instantiated if new events take place. 
+The function will take 2 inputs: unit of time & window size.
+The new window will go back to start from the window size in secods/unit of time selected.
+
+```sql
+SELECT COUNT(*)
+FROM Input
+GROUP BY SlidingWindow(second,10)
+```
+
+##### Session window
+The session windows are not a fixed size on the consequent windows might not overlap. A session window is only created when there are new events present, so there are no windows in the moments of silence.
+
+This function accepts three parameters: unit of time, timeout & maximum size.
+If there is silence for more than the timeout specified, the current window will be closed. If the size of the window exceeds theb maximum size specified, the current window will also be closed.
+
+```sql
+SELECT COUNT(*)
+FROM Input
+GROUP BY SessionWindow(second,5,10)
+```
+
+**Note:** Azure Stream Analytics only checks for the size of a session window at multiples of the maximum size. For an example, if maximum size is set to be 10 seconds, Azure Stream Analytics will only keep checking for the maximum size of the window at the 10‑second, 20‑second, and 10n-second mark.
 
