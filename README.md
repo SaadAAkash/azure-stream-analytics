@@ -103,11 +103,39 @@ Supported reference inputs: Azure Blob storage and Azure SQL Database
 The data stream as an ongoing sequence of events over time 
 Supported stream inputs: Azure Event Hubs, IoT Hub, and Blob storage
 
+#### Data Formats
+Supported data formats as input data streams are:
+1. CSV
+1. JSON
+1. Apache Avro
 
+
+### Analytics Timing & Event Ordering Policies
+
+Azure Stream Analytics uses **arrival time** as the timestamp by default, not event time. So using the `TIMESTAMP BY` clause, you can specify custom timestamp values, and these custom values can be anything (arrival or event time or your custom time value).
+
+- For Event HUbs & IoT Hubs, the arrival time of an event is the time the event was received.
+- In case of Azure Blob storage input, the arrival time is the last modified time of the blob object.
+- An example opf using event time as timestamp can be:
+  ```tsql
+  SELECT
+        AlertTime,
+        SomeOtherData
+  FROM Input TIMESTAMP BY AlertTime
+  ```
+
+We can use event ordering policies to handle late arrivals/out-of-order events/messages.
+
+- Late arrival policy: Accept events within the policy window and adjust/drop the rest
+- Out‑of‑order policy: If you have messages coming in and newer messages are already received, Azure Stream Analytics is going to compare the out‑of‑order message timestamp with the out‑of‑order policy window time. If older, the message will be dropped or its timestamp will be adjusted to the current time. If the out‑of‑order time difference is less than the out‑of‑order policy window, the message will be accepted.
+- Event ordering policies are applied **only if** TIMESTAMP BY is used in your queries.
 
 ### Development Notes
 - Every Job topology consists of four main actions: Inputs, Functions, Query & Outputs.
 - While configuring outputs for a job, there are two important settings that we need to be mindful of:
   1. The first one is the minimum rows. If I set X to this field, this means no output batch or output file will get created unless I have at least X rows in my output.
   2. The next setting is the maximum time. It means the maximum time the job is going to wait to have the minimum rows requirement satisfied. So if I put 1 minute here, this means that the job is going to wait for 1 minute to have the minimum rows completed. After the 1 minute is up, the job is going to create an output regardless of the number of rows I already have in my output.
-
+- Stream Analytics Query Language is similar to T-SQL.
+- Type conversion errors can happen when you are reading the input data. In this case, the job is going to **drop** the event
+- If the type conversion error is happening when you're outputting the data in your query, this error will be handled by the error policy, which can be configured to **drop or retry** the work.
+  
