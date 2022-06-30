@@ -45,6 +45,8 @@ You can configure Azure Stream Analytics to write outputs into:
 ##### Tumbling window
 The size of a tumbling window is fixed, and there is no overlapping between consequent windows
 
+![](https://github.com/SaadAAkash/azure-essentials/blob/master/resources/tumbling-window.png)
+
 ```sql
 SELECT COUNT(*)
 FROM Input
@@ -53,6 +55,9 @@ GROUP BY TumblingWindow(second,5)
 
 ##### Hopping window
 The size of a hopping window is fixed, but the difference with the tumbling window is the consequent windows are overlapping.
+
+![](https://github.com/SaadAAkash/azure-essentials/blob/master/resources/hopping-window.png)
+
 The function will take 3 inputs: unit of time, size of the window & hopping size.
 
 ```sql
@@ -63,6 +68,9 @@ GROUP BY HoppingWindow(second,10,5)
 
 ##### Sliding window
 The size of sliding windows are fixed, but new windows will only get created/instantiated if new events take place. 
+
+![](https://github.com/SaadAAkash/azure-essentials/blob/master/resources/sliding-window.png)
+
 The function will take 2 inputs: unit of time & window size.
 The new window will go back to start from the window size in secods/unit of time selected.
 
@@ -74,6 +82,8 @@ GROUP BY SlidingWindow(second,10)
 
 ##### Session window
 The session windows are not a fixed size on the consequent windows might not overlap. A session window is only created when there are new events present, so there are no windows in the moments of silence.
+
+![](https://github.com/SaadAAkash/azure-essentials/blob/master/resources/session-window.png)
 
 This function accepts three parameters: unit of time, timeout & maximum size.
 If there is silence for more than the timeout specified, the current window will be closed. If the size of the window exceeds theb maximum size specified, the current window will also be closed.
