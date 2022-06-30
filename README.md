@@ -86,3 +86,7 @@ GROUP BY SessionWindow(second,5,10)
 
 **Note:** Azure Stream Analytics only checks for the size of a session window at multiples of the maximum size. For an example, if maximum size is set to be 10 seconds, Azure Stream Analytics will only keep checking for the maximum size of the window at the 10‑second, 20‑second, and 10n-second mark.
 
+### Streaming Units (SUs)
+- A pool of computation resources available to process a query. They can be machines dedicated to execute your Azure Stream Analytics queries.
+- It is recommended that SU percentage utilization should be below 80% all the time. If it goes above, we can scale the SUs while provisioning a new job or after the job being provisioned.
+
